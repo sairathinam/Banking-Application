@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NeoBank - Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .card-hover:hover { transform: translateY(-4px); transition: all 0.3s; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+
+  <!-- ADMIN LOGIN SCREEN -->
+  <div id="adminLoginScreen" class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-700 rounded-3xl p-10">
+      <div class="text-center mb-10">
+        <h1 class="text-5xl font-bold text-red-500">NeoBank</h1>
+        <p class="text-zinc-400 mt-2">Administrator Login</p>
+      </div>
+
+      <h2 class="text-2xl font-semibold text-center mb-8">Admin Login</h2>
+
+      <input id="adminEmail" type="email" placeholder="Admin Email" 
+        class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-4"/>
+      <input id="adminPassword" type="password" placeholder="Password" 
+        class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-8"/>
+
+      <button onclick="adminLogin()" 
+        class="w-full bg-red-600 hover:bg-red-700 py-4 rounded-2xl font-semibold text-lg">
+        Login as Admin
+      </button>
+
+      <p class="text-center text-zinc-500 text-sm mt-6">
+        <a href="index.html" class="hover:text-emerald-400">← Back to User Login</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ADMIN MAIN PANEL -->
+  <div id="adminMain" class="hidden flex h-screen">
+
+    <!-- Sidebar -->
+    <div class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+      <div class="p-6 border-b border-zinc-800">
+        <h1 class="text-3xl font-bold text-red-500">NeoBank</h1>
+        <p class="text-red-400 text-sm font-medium">Admin Panel</p>
+      </div>
+
+      <div class="flex-1 py-6 overflow-y-auto">
+        <a href="#" onclick="showPage('adminDashboard')" class="flex items-center gap-3 px-6 py-4 hover:bg-zinc-800 text-emerald-400">
+          <i class="fas fa-tachometer-alt w-5"></i> Dashboard
+        </a>
+        <a href="#" onclick="loadAllUsers()" class="flex items-center gap-3 px-6 py-4 hover:bg-zinc-800">
+          <i class="fas fa-users w-5"></i> Users
+        </a>
+        <a href="#" onclick="loadAllLoans()" class="flex items-center gap-3 px-6 py-4 hover:bg-zinc-800">
+          <i class="fas fa-file-invoice-dollar w-5"></i> Loans
+        </a>
+        <a href="#" onclick="loadAllAccounts()" class="flex items-center gap-3 px-6 py-4 hover:bg-zinc-800">
+            <i class="fas fa-wallet w-5"></i> Accounts
+          </a>
+      </div>
+
+      <div class="p-6 border-t border-zinc-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-red-600 rounded-2xl flex items-center justify-center text-xl">👨‍💼</div>
+          <div>
+            <p class="font-medium" id="adminName">Administrator</p>
+            <p onclick="adminLogout()" class="text-xs text-red-400 cursor-pointer hover:text-red-500">Logout</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-auto">
+      <div class="bg-zinc-900 border-b border-zinc-800 px-8 py-5 flex justify-between items-center sticky top-0">
+        <h2 id="pageTitle" class="text-2xl font-semibold">Admin Dashboard</h2>
+      </div>
+
+      <!-- Dashboard -->
+      <!-- Dashboard -->
+      <div id="adminDashboard" class="p-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div class="bg-zinc-900 rounded-3xl p-8 card-hover">
+            <p class="text-zinc-400">Total Users</p>
+            <p class="text-5xl font-bold mt-4" id="totalUsers">0</p>
+          </div>
+          <div class="bg-zinc-900 rounded-3xl p-8 card-hover">
+            <p class="text-zinc-400">Total Accounts</p>
+            <p class="text-5xl font-bold mt-4" id="totalAccounts">0</p>
+          </div>
+          <div class="bg-zinc-900 rounded-3xl p-8 card-hover">
+            <p class="text-zinc-400">Total Loans</p>
+            <p class="text-5xl font-bold mt-4" id="totalLoans">0</p>
+          </div>
+          <div class="bg-zinc-900 rounded-3xl p-8 card-hover">
+            <p class="text-zinc-400">Total Transactions</p>
+            <p class="text-5xl font-bold mt-4" id="totalTransactions">0</p>
+          </div>
+        </div>
+      </div>
+      <!-- Toast Notification -->
+<div id="toast" class="hidden fixed bottom-6 right-6 flex items-center gap-3 bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 shadow-2xl z-50">
+  <div id="toastIcon" class="text-2xl"></div>
+  <div>
+    <p id="toastMessage" class="font-medium"></p>
+  </div>
+</div>
+
+      <!-- Users Page -->
+      <div id="users" class="p-8 hidden">
+        <h3 class="text-2xl font-semibold mb-6">All Users</h3>
+        <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-zinc-800">
+              <tr>
+                <th class="p-5 text-left">ID</th>
+                <th class="p-5 text-left">Full Name</th>
+                <th class="p-5 text-left">Email</th>
+                <th class="p-5 text-left">Phone</th>
+                <th class="p-5 text-left">Role</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody" class="divide-y divide-zinc-800"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Transaction Modal -->
+<div id="transactionModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+  <div class="bg-zinc-900 rounded-3xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden">
+    <!-- Header -->
+    <div class="px-8 py-6 border-b border-zinc-700 flex justify-between items-center">
+      <div>
+        <h2 class="text-2xl font-semibold" id="modalAccountNumber">Transactions</h2>
+        <p class="text-zinc-400 text-sm" id="modalAccountType"></p>
+      </div>
+      <button onclick="closeTransactionModal()" 
+        class="text-zinc-400 hover:text-white text-3xl leading-none">×</button>
+    </div>
+
+    <!-- Table -->
+    <div class="p-6 overflow-auto max-h-[70vh]">
+      <table class="w-full">
+        <thead class="bg-zinc-800 sticky top-0">
+          <tr>
+            <th class="p-4 text-left">Date</th>
+            <th class="p-4 text-left">Type</th>
+            <th class="p-4 text-left">Description</th>
+            <th class="p-4 text-right">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="transactionTableBody" class="divide-y divide-zinc-800"></tbody>
+      </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-6 border-t border-zinc-700 text-right">
+      <button onclick="closeTransactionModal()" 
+        class="px-8 py-3 bg-zinc-700 hover:bg-zinc-600 rounded-2xl">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+      <!-- Loans Page -->
+      <div id="loans" class="p-8 hidden">
+        <h3 class="text-2xl font-semibold mb-6">All Loans</h3>
+        <div id="loansList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </div>
+      <!-- </div> -->
+      <!-- Accounts Page -->
+     <div id="accounts" class="p-8 hidden">
+        <!-- <h3 class="text-2xl font-semibold mb-6">All Accounts</h3> -->
+        <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+        <table class="w-full">
+           <thead class="bg-zinc-800">
+              <tr>
+               <th class="p-5 text-left">Account No</th>
+                <th class="p-5 text-left">Account Type</th>
+                <th class="p-5 text-left">User id</th>
+                 <th class="p-5 text-right">Balance</th>
+                 <th class="p-5 text-left">Transactions</th>
+              </tr>
+            </thead>
+      <tbody id="accountsTableBody" class="divide-y divide-zinc-800"></tbody>
+    </table>
+  </div>
+</div>
+    <!-- </div>
+  </div> -->
+  <!-- Loan Details Modal -->
+<div id="loanModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+  <div class="bg-zinc-900 rounded-3xl w-full max-w-2xl mx-4 overflow-hidden">
+    <div class="px-8 py-6 border-b border-zinc-700 flex justify-between items-center">
+      <h2 class="text-2xl font-semibold" id="modalLoanTitle">Loan Details</h2>
+      <button onclick="closeLoanModal()" class="text-3xl text-zinc-400 hover:text-white">×</button>
+    </div>
+    
+    <div class="p-8" id="loanModalContent">
+      <!-- Content filled by JS -->
+    </div>
+
+    <div class="p-6 border-t border-zinc-700 flex gap-3 justify-end" id="loanModalActions">
+      <!-- Buttons added dynamically -->
+    </div>
+  </div>
+</div>
+<!-- Loan Approval Modal -->
+<div id="approvalModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+  <div class="bg-zinc-900 rounded-3xl w-full max-w-lg mx-4 overflow-hidden">
+    <div class="px-8 py-6 border-b border-zinc-700">
+      <h2 class="text-2xl font-semibold" id="approvalModalTitle">Approve Loan</h2>
+    </div>
+    
+    <div class="p-8 space-y-6">
+      <div>
+        <label class="block text-zinc-400 text-sm mb-2">Approved Amount (₹)</label>
+        <input id="approveAmount" type="number" 
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500">
+      </div>
+      
+      <div>
+        <label class="block text-zinc-400 text-sm mb-2">Interest Rate (%)</label>
+        <input id="approveInterest" type="number" step="0.1" value="12.5"
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500">
+      </div>
+      
+      <div>
+        <label class="block text-zinc-400 text-sm mb-2">Tenure (Months)</label>
+        <input id="approveTenure" type="number" value="24"
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-emerald-500">
+      </div>
+    </div>
+
+    <div class="p-6 border-t border-zinc-700 flex gap-3 justify-end">
+      <button onclick="closeApprovalModal()" 
+        class="px-8 py-4 bg-zinc-700 hover:bg-zinc-600 rounded-2xl">Cancel</button>
+      <button onclick="submitApproval()" 
+        class="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 rounded-2xl font-medium">
+        Confirm Approve
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Loan Reject Modal -->
+<div id="rejectModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+  <div class="bg-zinc-900 rounded-3xl w-full max-w-lg mx-4 overflow-hidden">
+    <div class="px-8 py-6 border-b border-zinc-700">
+      <h2 class="text-2xl font-semibold text-red-400" id="rejectModalTitle">Reject Loan</h2>
+    </div>
+    
+    <div class="p-8">
+      <label class="block text-zinc-400 text-sm mb-2">Rejection Reason</label>
+      <textarea id="rejectReason" rows="4"
+        class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-red-500 resize-none"
+        placeholder="Enter reason for rejection..."></textarea>
+    </div>
+
+    <div class="p-6 border-t border-zinc-700 flex gap-3 justify-end">
+      <button onclick="closeRejectModal()" 
+        class="px-8 py-4 bg-zinc-700 hover:bg-zinc-600 rounded-2xl">Cancel</button>
+      <button onclick="submitReject()" 
+        class="px-8 py-4 bg-red-600 hover:bg-red-700 rounded-2xl font-medium">
+        Confirm Reject
+      </button>
+    </div>
+  </div>
+</div>
+<!-- User Details Modal -->
+<div id="userDetailsModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50 overflow-auto">
+  <div class="bg-zinc-900 rounded-3xl w-full max-w-6xl mx-4 my-8 max-h-[95vh] overflow-hidden flex flex-col">
+    
+    <!-- Header -->
+    <div class="px-8 py-6 border-b border-zinc-700 flex justify-between items-center">
+      <div>
+        <h2 class="text-3xl font-bold" id="modalUserName">User Details</h2>
+        <p class="text-zinc-400" id="modalUserEmail"></p>
+      </div>
+      <button onclick="closeUserModal()" class="text-4xl text-zinc-400 hover:text-white">×</button>
+    </div>
+
+    <div class="flex-1 overflow-auto p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- User Info -->
+        <div class="lg:col-span-1 bg-zinc-800 rounded-3xl p-8">
+          <h3 class="text-lg font-semibold mb-6">User Information</h3>
+          <div id="userInfoContent" class="space-y-4 text-sm"></div>
+        </div>
+
+        <!-- Accounts -->
+        <div class="lg:col-span-1">
+          <h3 class="text-lg font-semibold mb-4">Accounts</h3>
+          <div id="userAccountsList" class="space-y-4"></div>
+        </div>
+
+        <!-- Loans -->
+        <div class="lg:col-span-1">
+          <h3 class="text-lg font-semibold mb-4">Loans</h3>
+          <div id="userLoansList" class="space-y-4"></div>
+        </div>
+      <!-- </div> -->
+
+      <!-- Transactions -->
+      <div class="mt-10">
+        <h3 class="text-lg font-semibold mb-4">All Transactions</h3>
+        <div class="bg-zinc-800 rounded-3xl overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-zinc-900">
+              <tr>
+                <th class="p-4 text-left">Date</th>
+                <th class="p-4 text-left">Type</th>
+                <!-- <th class="p-4 text-left">Account</th> -->
+                <th class="p-4 text-left">Description</th>
+                <th class="p-4 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="userTransactionsBody" class="divide-y divide-zinc-700"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ <script src="js/config.js"></script>
+ <script src="js/helpers.js"></script>
+ <script src="js/admin.js"></script>
+
+</body>
+</html>

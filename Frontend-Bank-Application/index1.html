@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NeoBank - Secure Banking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+
+  <!-- AUTH SCREEN -->
+  <div id="authScreen" class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-700 rounded-3xl p-10">
+      <div class="text-center mb-10">
+        <h1 class="text-5xl font-bold text-emerald-500">NeoBank</h1>
+        <p class="text-zinc-400 mt-2">Secure Digital Banking</p>
+      </div>
+
+      <div class="flex mb-8 border-b border-zinc-700">
+        <button onclick="showTab('login')" id="loginTab" 
+          class="flex-1 pb-4 text-lg font-medium border-b-2 border-emerald-500 text-emerald-400">Login</button>
+        <button onclick="showTab('register')" id="registerTab"
+          class="flex-1 pb-4 text-lg font-medium text-zinc-400">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm">
+        <input id="loginEmail" type="email" placeholder="Email Address" 
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-4"/>
+        <input id="loginPassword" type="password" placeholder="Password" 
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-6"/>
+        <button onclick="login()" 
+          class="w-full bg-emerald-600 hover:bg-emerald-700 py-4 rounded-2xl font-semibold text-lg">Login</button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" class="hidden">
+        <input id="regFullName" type="text" placeholder="Full Name" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-4"/>
+        <input id="regEmail" type="email" placeholder="Email Address" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-4"/>
+        <input id="regPhone" type="tel" placeholder="Phone Number" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-4"/>
+        <input id="regPassword" type="password" placeholder="Password" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-4"/>
+        <select id="regGender" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-4">
+          <option value="MALE">Male</option>
+          <option value="FEMALE">Female</option>
+          <option value="OTHER">Other</option>
+        </select>
+        <input id="regAddress" type="text" placeholder="Address (e.g. Pune)" 
+          class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 mb-6"/>
+        <button onclick="register()" 
+          class="w-full bg-emerald-600 hover:bg-emerald-700 py-4 rounded-2xl font-semibold text-lg">Register</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN USER APP -->
+  <div id="mainApp" class="hidden flex h-screen">
+
+    <!-- Sidebar -->
+    <div class="w-72 bg-zinc-900 border-r border-zinc-800 flex flex-col">
+      <div class="p-6 border-b border-zinc-800">
+        <h1 class="text-3xl font-bold text-emerald-500">NeoBank</h1>
+      </div>
+
+      <div class="flex-1 py-6 overflow-y-auto">
+        <a href="#" onclick="showPage('dashboard')" class="flex items-center gap-3 px-6 py-4 hover:bg-zinc-800 text-emerald-400">
+          <i class="fas fa-home w-5"></i> Dashboard
+        </a>
+        <a href="#" onclick="showPage('transactions')" class="flex items-center gap-3 px-6 py-4 hover:bg-zinc-800">
+          <i class="fas fa-exchange-alt w-5"></i> Transactions
+        </a>
+        <a href="#" onclick="showPage('loanApplication')" class="flex items-center gap-3 px-6 py-4 hover:bg-zinc-800">
+          <i class="fas fa-hand-holding-usd w-5"></i> Apply for Loan
+        </a>
+        <a href="#" onclick="showPage('myLoans'); loadMyLoans();"
+          class="flex items-center gap-3 px-6 py-4 hover:bg-zinc-800">
+          <i class="fas fa-list w-5"></i> My Loans
+           </a>
+      </div>
+
+      <div class="p-6 border-t border-zinc-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-2xl">👤</div>
+          <div>
+            <p class="font-medium" id="userNameDisplay">User</p>
+            <p onclick="logout()" class="text-xs text-red-400 cursor-pointer hover:text-red-500">Logout</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-auto">
+      <div class="bg-zinc-900 border-b border-zinc-800 px-8 py-5 flex justify-between items-center sticky top-0">
+        <h2 id="pageTitle" class="text-2xl font-semibold">Dashboard</h2>
+        <div class="bg-zinc-800 px-5 py-2 rounded-2xl flex items-center gap-2">
+          <i class="fas fa-wallet"></i>
+          <span id="balanceTop">₹0</span>
+        </div>
+      </div>
+
+      <!-- Pages -->
+      <div id="dashboard" class="page p-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-zinc-900 rounded-3xl p-8 card-hover">
+             <p id="accountNumberDisplay" class="text-emerald-400 mt-2 font-mono"></p>
+            <p class="text-zinc-400">Available Balance</p>
+            <p class="text-5xl font-bold mt-4" id="mainBalance">₹0</p>
+          </div>
+          <!-- <div class="bg-zinc-900 rounded-3xl p-8 card-hover">
+            <p class="text-zinc-400">Active Loans</p>
+            <p class="text-5xl font-bold mt-4 text-amber-500" id="activeLoansCount">0</p>
+          </div> -->
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-zinc-900 rounded-3xl p-8">
+            <h3 class="text-xl font-semibold mb-6">Quick Actions</h3>
+            <div class="grid grid-cols-2 gap-4">
+              <button onclick="showDepositModal()" class="bg-emerald-600 hover:bg-emerald-700 h-32 rounded-3xl flex flex-col items-center justify-center gap-3">
+                <i class="fas fa-arrow-down text-4xl"></i><span>Deposit</span>
+              </button>
+              <button onclick="showWithdrawModal()" class="bg-zinc-800 hover:bg-zinc-700 h-32 rounded-3xl flex flex-col items-center justify-center gap-3">
+                <i class="fas fa-arrow-up text-4xl"></i><span>Withdraw</span>
+              </button>
+              <button onclick="showPage('loanApplication')" class="bg-amber-600 hover:bg-amber-700 h-32 rounded-3xl flex flex-col items-center justify-center gap-3">
+                <i class="fas fa-hand-holding-usd text-4xl"></i><span>Apply Loan</span>
+              </button>
+              <button onclick="showPage('transactions')" class="bg-zinc-800 hover:bg-zinc-700 h-32 rounded-3xl flex flex-col items-center justify-center gap-3">
+                <i class="fas fa-history text-4xl"></i><span>History</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-zinc-900 rounded-3xl p-8">
+            <h3 class="text-xl font-semibold mb-6">Recent Transactions</h3>
+            <div id="recentTx" class="space-y-4"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transactions Page -->
+      <div id="transactions" class="page p-8 hidden">
+        <h3 class="text-2xl font-semibold mb-6">Transaction History</h3>
+        <div class="bg-zinc-900 rounded-3xl overflow-hidden">
+          <table class="w-full">
+            <thead class="bg-zinc-800">
+              <tr>
+                <th class="p-5 text-left">Date</th>
+                <th class="p-5 text-left">Description</th>
+                <th class="p-5 text-left">Remarks</th>
+                <th class="p-5 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="txTable" class="divide-y divide-zinc-800"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Loan Application Page -->
+      <div id="loanApplication" class="page p-8 hidden">
+        <div class="max-w-2xl mx-auto bg-zinc-900 rounded-3xl p-10">
+          <h2 class="text-3xl font-bold text-center mb-10">Apply for Loan</h2>
+          <div class="space-y-6">
+            <div>
+              <label class="block text-zinc-400 mb-2">Loan Amount (₹)</label>
+              <input id="loanAmount" type="number" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-5 text-2xl"/>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+              <div>
+                <label class="block text-zinc-400 mb-2">Tenure (Months)</label>
+                <input id="loanTenure" type="number" value="12" class="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-5"/>
+              </div>
+              <select id="loanPurpose" class="w-full bg-zinc-800 rounded-2xl px-6 py-5">
+                <option value="PERSONAL_LOAN">Personal Loan</option>
+                <option value="EDUCATION_LOAN">Education Loan</option>
+                <option value="HOME_LOAN">Home Loan</option>
+              </select>
+            </div>
+            <button onclick="applyLoan()" 
+              class="w-full bg-emerald-600 hover:bg-emerald-700 py-5 rounded-2xl text-xl font-semibold">
+              Submit Loan Application
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Loans Page -->
+      <div id="myLoans" class="page p-8 hidden">
+        <h3 class="text-2xl font-semibold mb-8">My Loans</h3>
+        <div id="myLoansContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </div>
+    </div>
+  
+
+  <!-- Deposit & Withdraw Modals -->
+  <div id="depositModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div class="bg-zinc-900 rounded-3xl p-8 w-full max-w-md">
+      <h3 class="text-2xl font-semibold mb-6">Deposit Money</h3>
+      <input id="depositAmt" type="number" placeholder="Amount" class="w-full bg-zinc-800 rounded-2xl px-6 py-5 text-2xl mb-6"/>
+      <div class="flex gap-4">
+        <button onclick="hideDepositModal()" class="flex-1 py-4 border border-zinc-700 rounded-2xl">Cancel</button>
+        <button onclick="makeDeposit()" class="flex-1 py-4 bg-emerald-600 rounded-2xl">Deposit</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="withdrawModal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <div class="bg-zinc-900 rounded-3xl p-8 w-full max-w-md">
+      <h3 class="text-2xl font-semibold mb-6">Withdraw Money</h3>
+      <input id="withdrawAmt" type="number" placeholder="Amount" class="w-full bg-zinc-800 rounded-2xl px-6 py-5 text-2xl mb-6"/>
+      <div class="flex gap-4">
+        <button onclick="hideWithdrawModal()" class="flex-1 py-4 border border-zinc-700 rounded-2xl">Cancel</button>
+        <button onclick="makeWithdraw()" class="flex-1 py-4 bg-emerald-600 rounded-2xl">Withdraw</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load all JS files -->
+  <script src="js/config.js"></script>
+  <script src="js/helpers.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/user.js"></script>
+
+</body>
+</html>
