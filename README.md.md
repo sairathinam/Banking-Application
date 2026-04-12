@@ -37,15 +37,14 @@ A full-stack digital banking  application with a **Spring Boot REST API** backen
 | Database | MySQL  (`banking_db`) |
 | Security | Spring Security + JWT (JJWT 0.11.5) |
 | Packaging | Maven (WAR) |
-| Other |  Spring Validation, Twilio SDK (SMS) |
+| Other |  Spring Validation |
 
 
 ### Frontend
 | Layer | Technology |
 |---|---|
 | Pages | Plain HTML5 |
-| Styling | Tailwind CSS (CDN) |
-| Icons | Font Awesome 6 (CDN) |
+| Styling |  CSS  |
 | Logic | Vanilla JavaScript (ES6+, `fetch` API) |
 | Auth Storage | `localStorage` (JWT token) |
 
