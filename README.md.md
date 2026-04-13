@@ -26,6 +26,52 @@ A full-stack digital banking  application with a **Spring Boot REST API** backen
 - Reject loans (with reason)
 
 ---
+## 📸 Project Screenshots
+
+### 👤 User
+
+#### 🔐 Login
+<img src="https://github.com/user-attachments/assets/2b821ca4-e3a5-4eab-a5ea-00f85f3e07be" width="800"/>
+
+#### 📝 Registration
+<img src="https://github.com/user-attachments/assets/349316dd-a47a-483d-b113-ad3e7f0f3e67" width="800"/>
+
+#### 💰 Dashboard
+<img src="https://github.com/user-attachments/assets/57ed51dd-8d47-408f-b762-477a6c93ff73" width="800"/>
+
+#### 📄 Loan Application
+<img src="https://github.com/user-attachments/assets/06a52ad5-b48b-4a0e-b000-caab48163fb2" width="800"/>
+
+#### 📊 Loan Management
+<img src="https://github.com/user-attachments/assets/544dea30-f3b0-499c-95bc-157c2dd58663" width="800"/>
+
+---
+
+### 🛠️ Admin
+
+#### 🔐 Login
+<img src="https://github.com/user-attachments/assets/cff41c6f-d31b-44ee-9a44-b3a0bd15d735" width="800"/>
+
+#### 📊 Dashboard
+<img src="https://github.com/user-attachments/assets/675e0796-3433-4d96-ac7f-2ea06fe300d4" width="800"/>
+
+#### 📄 Loan Management
+<img src="https://github.com/user-attachments/assets/438fa2ad-878f-4251-a14d-e6b73a33910d" width="800"/>
+
+#### ✅ Loan Approval
+<img src="https://github.com/user-attachments/assets/7396b20d-60e8-4616-8f19-6a401082761f" width="800"/>
+
+#### 📑 Loan Details
+<img src="https://github.com/user-attachments/assets/a0e14b71-32b3-40ae-8030-2a00c05cfa9f" width="800"/>
+
+#### 🏦 Account Management
+<img src="https://github.com/user-attachments/assets/836ce839-6540-4d27-92be-fb9ac1d0595f" width="800"/>
+
+#### 💳 Transactions
+<img src="https://github.com/user-attachments/assets/5cade32e-eb0c-49cd-b8d1-2124237ec5bd" width="800"/>
+
+#### 👥 User Management
+<img src="https://github.com/user-attachments/assets/ef3d89eb-7ed8-4494-9063-3d44b2258078" width="800"/>
 
 ## 🧰 Tech Stack
 
